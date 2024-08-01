@@ -27,21 +27,62 @@ const state = {
  * @returns {Promise<void>} A promise that resolves when the data is fetched and the table is rendered.
  */
 async function fetchData() {
+    // Pradėkite kraunimo būseną
+    setLoading(true);
+
     try {
         const response = await fetch('http://localhost:8085/api/contacts/all');
-        state.contacts = await response.json();
+
+        // Patikrinkite, ar atsakymas buvo sėkmingas
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Patikrinkite, ar gauti duomenys yra masyvas
+        if (!Array.isArray(data)) {
+            throw new Error('Unexpected data format: expected an array');
+        }
+
+        // Atnaujinkite būseną su kontaktais
+        state.contacts = data;
         renderTable();
     } catch (error) {
-        console.error('Error fetching data:', error);
+        handleFetchError(error);
+    } finally {
+        // Užbaigiamas užkrovimas
+        setLoading(false);
     }
 }
 
+/**
+ * Handles errors during the fetch operation.
+ * @param {Error} error The error object.
+ */
+function handleFetchError(error) {
+    console.error('Error fetching data:', error);
+    // Čia galite pridėti vartotojo pranešimus apie klaidą, pvz., peržiūrint vartotojo sąsają
+}
+
+/**
+ * Sets the loading state.
+ * @param {boolean} isLoading Whether data is being loaded or not.
+ */
+function setLoading(isLoading) {
+    // Čia galite atnaujinti vartotojo sąsają, kad būtų rodoma, jog duomenys yra kraunami
+    // Pvz., galite rodyti/krautis užimtumo indikatorių
+}
 
 /**
  * Renders the table with paginated contacts data.
  */
 function renderTable() {
-    const tableBody = document.querySelector('#contacts-table tbody');
+    const tableBody = document.querySelector('.table.table-hover tbody');
+    if (!tableBody) {
+        console.error("Error: Table body element not found. Ensure that the element with id 'contacts-table' and its tbody exist in the DOM.");
+        return;
+    }
     tableBody.innerHTML = '';
 
     const start = (state.currentPage - 1) * state.rowsPerPage;
