@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.addEventListener('input', filterContacts);
 });
 
+/**
+ * Filters the contacts table based on the value entered in the search input field.
+ */
 function filterContacts() {
     const filterValue = document.getElementById('search-input').value.toLowerCase();
     const tableBody = document.querySelector('.contacts-table tbody');
