@@ -17,6 +17,7 @@ async function fetchData() {
 
         state.contacts = data;
         renderTable();
+        renderPagination();
     } catch (error) {
         console.error('Error fetching data:', error);
     } finally {
@@ -92,7 +93,7 @@ function renderPagination() {
     `);
 
     // Puslapių logika: rodome tik ribotą kiekį aplink esamą puslapį
-    const delta = 2; // Kiek puslapių rodyti prieš ir po esamo puslapio
+    const delta = 1; // Kiek puslapių rodyti prieš ir po esamo puslapio
     let startPage = Math.max(1, currentPage - delta);
     let endPage = Math.min(maxPage, currentPage + delta);
 
@@ -138,6 +139,15 @@ function changePage(direction) {
     if (newPage >= 1 && newPage <= maxPage) {
         goToPage(newPage);
     }
+}
+
+function changeRowsPerPage() {
+    const rowsPerPageSelect = document.getElementById('rows-per-page');
+    state.rowsPerPage = parseInt(rowsPerPageSelect.value, 10);
+    state.currentPage = 1; // Reset to first page
+    renderTable();
+    renderPagination();
+    updatePageInfo();
 }
 
 let sortDirection = 1;
