@@ -65,25 +65,90 @@ function updatePageInfo() {
     }
 }
 
+function renderPagination() {
+    const pagination = document.getElementById('pagination');
+    if (!pagination) {
+        return console.error("Error: Pagination element not found.");
+    }
+
+    const maxPage = Math.ceil(state.contacts.length / state.rowsPerPage);
+    const currentPage = state.currentPage;
+    const pageItems = [];
+
+    const createPageItem = (page, label = page) => {
+        const isActive = page === currentPage ? 'active' : '';
+        return `
+            <li class="page-item ${isActive}">
+                <button class="page-link" onclick="goToPage(${page})">${label}</button>
+            </li>
+        `;
+    };
+
+    // Pridedame "Previous" mygtuką
+    pageItems.push(`
+        <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+            <button class="page-link" onclick="changePage(-1)">Previous</button>
+        </li>
+    `);
+
+    // Puslapių logika: rodome tik ribotą kiekį aplink esamą puslapį
+    const delta = 2; // Kiek puslapių rodyti prieš ir po esamo puslapio
+    let startPage = Math.max(1, currentPage - delta);
+    let endPage = Math.min(maxPage, currentPage + delta);
+
+    if (startPage > 1) {
+        pageItems.push(createPageItem(1)); // Pirmas puslapis
+        if (startPage > 2) {
+            pageItems.push(createPageItem(null, '...')); // Praleisti puslapius
+        }
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+        pageItems.push(createPageItem(i));
+    }
+
+    if (endPage < maxPage) {
+        if (endPage < maxPage - 1) {
+            pageItems.push(createPageItem(null, '...')); // Praleisti puslapius
+        }
+        pageItems.push(createPageItem(maxPage)); // Paskutinis puslapis
+    }
+
+    // Pridedame "Next" mygtuką
+    pageItems.push(`
+        <li class="page-item ${currentPage === maxPage ? 'disabled' : ''}">
+            <button class="page-link" onclick="changePage(1)">Next</button>
+        </li>
+    `);
+
+    pagination.innerHTML = pageItems.join('');
+}
+
+function goToPage(page) {
+    if (page) {
+        state.currentPage = page;
+        renderTable();
+        renderPagination(); // Atnaujinti puslapiavimą po puslapio keitimo
+    }
+}
+
 function changePage(direction) {
     const maxPage = Math.ceil(state.contacts.length / state.rowsPerPage);
-    state.currentPage = Math.max(1, Math.min(state.currentPage + direction, maxPage));
-    renderTable();
+    const newPage = state.currentPage + direction;
+    if (newPage >= 1 && newPage <= maxPage) {
+        goToPage(newPage);
+    }
 }
 
 let sortDirection = 1;
 
 function sortTable(columnIndex) {
-    const columnKeys = ['id', 'firstName', 'secondName', 'email', 'phone1', 'phone2', 'street', 'city', 'postCode', 'country'];
-    const key = columnKeys[columnIndex];
-
+    const columnKey = Object.keys(state.contacts[0])[columnIndex];
     state.contacts.sort((a, b) => {
-        if (typeof a[key] === 'string') return sortDirection * a[key].localeCompare(b[key]);
-        return sortDirection * (a[key] - b[key]);
+        if (a[columnKey] < b[columnKey]) return -sortDirection;
+        if (a[columnKey] > b[columnKey]) return sortDirection;
+        return 0;
     });
-
-    // Apverčia rūšiavimo kryptį
-    sortDirection *= -1;
-
+    sortDirection *= -1; // toggle sort direction
     renderTable();
 }
