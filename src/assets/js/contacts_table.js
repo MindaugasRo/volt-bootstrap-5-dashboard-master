@@ -29,7 +29,7 @@ function setLoading(isLoading) {
 }
 
 function renderTable() {
-    const tableBody = document.querySelector('.table.table-hover tbody');
+    const tableBody = document.querySelector('.contacts-table tbody');
     if (!tableBody) {
         return console.error("Error: Table body element not found.");
     }
@@ -39,7 +39,7 @@ function renderTable() {
         <tr>
             <td>${contact.id}</td>
             <td>${contact.firstName}</td>
-            <td>${contact.lastName}</td>
+            <td>${contact.secondName}</td>
             <td>${contact.email}</td>
             <td>${contact.phone1}</td>
             <td>${contact.phone2}</td>
@@ -71,18 +71,19 @@ function changePage(direction) {
     renderTable();
 }
 
+let sortDirection = 1;
+
 function sortTable(columnIndex) {
-    const columnKeys = ['id', 'firstName', 'lastName', 'email', 'phone1', 'phone2', 'street', 'city', 'postCode', 'country'];
+    const columnKeys = ['id', 'firstName', 'secondName', 'email', 'phone1', 'phone2', 'street', 'city', 'postCode', 'country'];
     const key = columnKeys[columnIndex];
 
     state.contacts.sort((a, b) => {
-        if (typeof a[key] === 'string') return a[key].localeCompare(b[key]);
-        return a[key] - b[key];
+        if (typeof a[key] === 'string') return sortDirection * a[key].localeCompare(b[key]);
+        return sortDirection * (a[key] - b[key]);
     });
 
-    if (JSON.stringify(state.contacts) === JSON.stringify([...state.contacts].reverse())) {
-        state.contacts.reverse();
-    }
+    // Apverčia rūšiavimo kryptį
+    sortDirection *= -1;
 
     renderTable();
 }
