@@ -48,6 +48,7 @@ function renderTable() {
             <td>${contact.city}</td>
             <td>${contact.postCode}</td>
             <td>${contact.country}</td>
+            <td>${contact.action}</td>
         </tr>
     `).join('');
 
