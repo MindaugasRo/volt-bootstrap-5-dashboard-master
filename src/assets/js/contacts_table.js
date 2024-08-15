@@ -29,7 +29,7 @@ function setLoading(isLoading) {
     // Implement your loading state logic here
 }
 
-function generateActionButtons() {
+function generateActionButtons(contactId) {
     return `
         <div class="dropdown">
             <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-bs-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
@@ -45,7 +45,7 @@ function generateActionButtons() {
                         <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path>
                     </svg> Edit
                 </a>
-                <a class="dropdown-item d-flex align-items-center" href="#">
+                <a class="dropdown-item d-flex align-items-center" href="#" onclick="deleteContact(${contactId})">
                     <svg class="dropdown-icon text-danger me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
                     </svg> Delete
@@ -53,6 +53,22 @@ function generateActionButtons() {
             </div>
         </div>
     `;
+}
+
+async function deleteContact(contactId) {
+    try {
+        const response = await fetch(`http://localhost:8085/api/contacts/delete/${contactId}`, {
+            method: 'DELETE'
+        });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+        // Remove the contact from the state and re-render the table
+        state.contacts = state.contacts.filter(contact => contact.id !== contactId);
+        renderTable();
+        renderPagination();
+    } catch (error) {
+        console.error('Error deleting contact:', error);
+    }
 }
 
 function renderTable() {
@@ -74,7 +90,7 @@ function renderTable() {
             <td>${contact.city}</td>
             <td>${contact.postCode}</td>
             <td>${contact.country}</td>
-            <td>${generateActionButtons()}</td>
+            <td>${generateActionButtons(contact.id)}</td>
         </tr>
     `).join('');
 
