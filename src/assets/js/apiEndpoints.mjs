@@ -11,6 +11,7 @@ const ENDPOINTS = {
 
     // Delete contact byID
     DELETE_CONTACT: (contactId) => `${API_BASE_URL}/contacts/delete/${contactId}`,
+
 };
 
 module.exports = ENDPOINTS;

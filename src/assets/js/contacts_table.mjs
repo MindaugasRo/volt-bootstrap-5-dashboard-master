@@ -57,6 +57,7 @@ function generateActionButtons(contactId) {
 
 // import { ENDPOINTS } from './apiEndpoints.mjs';
 // const { ENDPOINTS } = require('./apiEndpoints.mjs');
+// console.log(ENDPOINTS.GET_CONTACTS);
 
 async function deleteContact(contactId) {
     try {
