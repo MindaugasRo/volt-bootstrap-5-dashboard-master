@@ -26,6 +26,7 @@
         "type": "git",
         "url": "https://github.com/themesberg/volt-bootstrap-5-dashboard"
     },
+    "type": "module",
     "license": "https://github.com/themesberg/volt-bootstrap-5-dashboard/blob/master/LICENSE.md",
     "dependencies": {
         "@popperjs/core": "^2.9.2",

@@ -1,6 +1,6 @@
-const API_BASE_URL = 'https://localhost:8085/api';
+const API_BASE_URL = 'http://localhost:8085/api';
 
-export const ENDPOINTS = {
+const ENDPOINTS = {
     GET_CONTACTS: `${API_BASE_URL}/contacts`,
 
     //Get Contacts ALL
@@ -11,5 +11,6 @@ export const ENDPOINTS = {
 
     // Delete contact byID
     DELETE_CONTACT: (contactId) => `${API_BASE_URL}/contacts/delete/${contactId}`,
-    
 };
+
+module.exports = ENDPOINTS;

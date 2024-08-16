@@ -55,9 +55,12 @@ function generateActionButtons(contactId) {
     `;
 }
 
+// import { ENDPOINTS } from './apiEndpoints.mjs';
+// const { ENDPOINTS } = require('./apiEndpoints.mjs');
+
 async function deleteContact(contactId) {
     try {
-        const response = await fetch(`http://localhost:8085/api/contacts/delete/${contactId}`, {
+        const response = await fetch(ENDPOINTS.DELETE_CONTACT(contactId), {
             method: 'DELETE'
         });
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
