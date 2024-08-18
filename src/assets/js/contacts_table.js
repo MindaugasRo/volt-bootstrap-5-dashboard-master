@@ -55,17 +55,8 @@ function generateActionButtons(contactId) {
     `;
 }
 
-// import { ENDPOINTS } from './apiEndpoints.mjs';
-// const { ENDPOINTS } = require('./apiEndpoints.mjs');
-// console.log(ENDPOINTS.GET_CONTACTS);
-
 async function deleteContact(contactId) {
     try {
-        const response = await fetch(ENDPOINTS.DELETE_CONTACT(contactId), {
-            method: 'DELETE'
-        });
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
         // Remove the contact from the state and re-render the table
         state.contacts = state.contacts.filter(contact => contact.id !== contactId);
         renderTable();
